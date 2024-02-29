@@ -1,48 +1,46 @@
 import lib.susepubliccloudinfoclient.infoserverrequests as ifsrequest
 import json
 
-#creating my variable:
+#creatinf my variable
 choosed_date = 20230612
 
-#defining a way to get images from all providers:
-def get_all_images_results(date):
-    
-    #defining a list with all providers:
-    providers = ["microsoft",
-                "amazon"
-                "oracle"
-                "alibaba"
-                "google"]
+#defining a way to get images from all providers
+def get_all_image_results(date):
+    # List all the used providers
+    providers = [
+        "microsoft",
+        "amazon",
+        "oracle",
+        "alibaba",
+        "google"
+    ]
 
-    data = []
+    results = []
     for provider in providers:
+        # Get all results from a specific provider(microsoft, amazon, ...)
         new_images = ifsrequest.get_image_data(provider, None, 'json', command_arg_filter=f"publishedon>{date}")
         new_images = json.loads(new_images)
-        # Adding the all the information in data
-        data += new_images["images"]
 
-    return data
+        # Add result in "results"
+        results += new_images["images"]
 
+    return results
 
-
-#filtering the output on my way :D
+#filtering the output on my way
 def filtering_results(date):
-    images = get_all_images_results(date)
+    images = get_all_image_results(date)
 
     for image in images:
-        #setting the date
-        date = str(images["publishedon"])
+        date = str(image["publishedon"])
         year = date[:4]
         month = date[4:6]
         day = date[6:]
-        format_date = f"{year}/{month}/{day}"
+        fdate = f"{year}/{month}/{day}"
 
-        #setting the url
-        url = "[URL not provided]"
-        if "changeinfo" in images:
-            url = images["changeinfo"]
-        
-        print(f'{format_date}: {images["name"]}-------------------{url}')
-        
-        
+        url = "[URI Not Provided]"
+        if "changeinfo" in image:
+            url = image["changeinfo"]
+
+        print(f'{fdate}: {image["name"]} ------------ {url}')
+
 filtering_results(choosed_date)
